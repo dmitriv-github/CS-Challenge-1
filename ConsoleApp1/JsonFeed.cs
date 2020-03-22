@@ -10,19 +10,16 @@ namespace ConsoleApp1
 {
     class JsonFeed
     {
-        static string _url = "";
-
-        public JsonFeed() { }
+        HttpClient client;
 
         public JsonFeed(string endpoint, int results)
         {
-            _url = endpoint;
+            client = new HttpClient();
+            client.BaseAddress = new Uri(endpoint);
         }
         
-        public static string[] GetRandomJokes(string firstname, string lastname, string category)
+        public string[] GetRandomJokes(string firstname, string lastname, string category)
         {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(_url);
             string url = "jokes/random";
 
             if (category != null)
@@ -52,19 +49,14 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="client2"></param>
         /// <returns></returns>
-        public static dynamic Getnames()
+        public dynamic Getnames()
         {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(_url);
             var result = client.GetStringAsync("").Result;
             return JsonConvert.DeserializeObject<dynamic>(result);
         }
 
-        public static string[] GetCategories()
+        public string[] GetCategories()
         {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(_url);
-
             return new string[] { Task.FromResult(client.GetStringAsync("categories").Result).Result };
         }
     }
