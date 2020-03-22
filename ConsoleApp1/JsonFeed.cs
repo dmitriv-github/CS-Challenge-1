@@ -10,14 +10,29 @@ namespace ConsoleApp1
 {
     class JsonFeed
     {
-        HttpClient client;
+        protected HttpClient client;
 
-        public JsonFeed(string endpoint, int results)
+        public JsonFeed(string endpoint)
         {
             client = new HttpClient();
             client.BaseAddress = new Uri(endpoint);
         }
-        
+    }
+
+    class JokesFeed : JsonFeed
+    {
+        private static string _url = "https://api.chucknorris.io/jokes/";
+
+        public JokesFeed() : base(_url)
+        { }
+
+        public async Task<string[]> getCategories()
+        {
+            string categoriesJson = await client.GetStringAsync("categories");
+            List<string> categoriesList = JsonConvert.DeserializeObject<List<string>>(categoriesJson);
+            return categoriesList.ToArray();
+        }
+
         public string[] GetRandomJokes(string firstname, string lastname, string category)
         {
             string url = "jokes/random";
@@ -43,21 +58,24 @@ namespace ConsoleApp1
 
             return new string[] { JsonConvert.DeserializeObject<dynamic>(joke).value };
         }
+    }
+
+    class NamesFeed : JsonFeed {
+        private static string _url = "https://uinames.com/api/";
+
+        public NamesFeed() : base(_url)
+        { }
 
         /// <summary>
         /// returns an object that contains name and surname
         /// </summary>
         /// <param name="client2"></param>
         /// <returns></returns>
-        public dynamic Getnames()
+        public async Task<dynamic> getNames()
         {
-            var result = client.GetStringAsync("").Result;
+            var result = await client.GetStringAsync("");
             return JsonConvert.DeserializeObject<dynamic>(result);
         }
-
-        public string[] GetCategories()
-        {
-            return new string[] { Task.FromResult(client.GetStringAsync("categories").Result).Result };
-        }
     }
+
 }
