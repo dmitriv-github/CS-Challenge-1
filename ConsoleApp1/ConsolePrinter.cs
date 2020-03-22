@@ -6,12 +6,12 @@ namespace ConsoleApp1
     {
         private string printValue;
 
-        public void printLine() 
+        public void PrintLine() 
         {
             Console.WriteLine();
         }
-        
-        public void printLine(string value)
+
+        public void PrintLine(string value)
         {
             this.printValue = value;
             Console.WriteLine(value);

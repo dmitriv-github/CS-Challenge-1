@@ -26,7 +26,7 @@ namespace ConsoleApp1
         public JokesFeed() : base(_url)
         { }
 
-        public async Task<string[]> getCategories()
+        public async Task<string[]> GetCategories()
         {
             string categoriesJson = await client.GetStringAsync("categories");
             List<string> categoriesList = JsonConvert.DeserializeObject<List<string>>(categoriesJson);
@@ -71,7 +71,7 @@ namespace ConsoleApp1
         /// </summary>
         /// <param name="client2"></param>
         /// <returns></returns>
-        public async Task<dynamic> getNames()
+        public async Task<dynamic> GetName()
         {
             var result = await client.GetStringAsync("");
             return JsonConvert.DeserializeObject<dynamic>(result);
