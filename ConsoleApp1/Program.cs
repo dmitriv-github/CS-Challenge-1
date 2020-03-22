@@ -18,6 +18,7 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             printer.Value("Press ? to get instructions.").ToString();
+
             if (Console.ReadLine() == "?")
             {
                 while (true)
@@ -25,18 +26,22 @@ namespace ConsoleApp1
                     printer.Value("Press c to get categories").ToString();
                     printer.Value("Press r to get random jokes").ToString();
                     GetEnteredKey(Console.ReadKey());
+
                     if (key == 'c')
                     {
                         getCategories();
                         PrintResults();
                     }
+                    
                     if (key == 'r')
                     {
                         printer.Value("Want to use a random name? y/n").ToString();
                         GetEnteredKey(Console.ReadKey());
-                        if (key == 'y')
-                            GetNames();
+
+                        if (key == 'y') GetNames();
+
                         printer.Value("Want to specify a category? y/n").ToString();
+                        
                         if (key == 'y')
                         {
                             printer.Value("How many jokes do you want? (1-9)").ToString();
@@ -56,7 +61,6 @@ namespace ConsoleApp1
                     names = null;
                 }
             }
-
         }
 
         private static void PrintResults()

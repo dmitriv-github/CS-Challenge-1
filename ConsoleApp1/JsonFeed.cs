@@ -13,6 +13,7 @@ namespace ConsoleApp1
         static string _url = "";
 
         public JsonFeed() { }
+
         public JsonFeed(string endpoint, int results)
         {
             _url = endpoint;
@@ -23,11 +24,12 @@ namespace ConsoleApp1
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(_url);
             string url = "jokes/random";
+
             if (category != null)
             {
-                if (url.Contains('?'))
-                    url += "&";
+                if (url.Contains('?')) url += "&";
                 else url += "?";
+                
                 url += "category=";
                 url += category;
             }
