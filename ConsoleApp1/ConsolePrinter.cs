@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace ConsoleApp1
 {
@@ -15,12 +9,12 @@ namespace ConsoleApp1
         public void print(string value)
         {
             this.printValue = value;
-            Console.WriteLine(this.printValue);
+            Console.WriteLine(value);
         }
 
         public override string ToString()
         {
-            return $"{this.GetType().Name}: {this.printValue}";
+            return $"{nameof(ConsolePrinter)}: {this.printValue}";
         }
     }
 }
