@@ -6,7 +6,7 @@ namespace ConsoleApp1
     {
         private string printValue;
 
-        public void print(string value)
+        public void printLine(string value)
         {
             this.printValue = value;
             Console.WriteLine(value);

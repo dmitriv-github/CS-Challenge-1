@@ -17,14 +17,15 @@ namespace ConsoleApp1
 
         static void Main(string[] args)
         {
-            printer.Value("Press ? to get instructions.").ToString();
+            printer.printLine("Press ? to get instructions.");
 
             if (Console.ReadLine() == "?")
             {
                 while (true)
                 {
-                    printer.Value("Press c to get categories").ToString();
-                    printer.Value("Press r to get random jokes").ToString();
+                    printer.printLine("Press c to get categories");
+                    printer.printLine("Press r to get random jokes");
+                    
                     GetEnteredKey(Console.ReadKey());
 
                     if (key == 'c')
@@ -35,24 +36,24 @@ namespace ConsoleApp1
                     
                     if (key == 'r')
                     {
-                        printer.Value("Want to use a random name? y/n").ToString();
+                        printer.printLine("Want to use a random name? y/n");
                         GetEnteredKey(Console.ReadKey());
 
                         if (key == 'y') GetNames();
 
-                        printer.Value("Want to specify a category? y/n").ToString();
+                        printer.printLine("Want to specify a category? y/n");
                         
                         if (key == 'y')
                         {
-                            printer.Value("How many jokes do you want? (1-9)").ToString();
+                            printer.printLine("How many jokes do you want? (1-9)");
                             int n = Int32.Parse(Console.ReadLine());
-                            printer.Value("Enter a category;").ToString();
+                            printer.printLine("Enter a category;");
                             GetRandomJokes(Console.ReadLine(), n);
                             PrintResults();
                         }
                         else
                         {
-                            printer.Value("How many jokes do you want? (1-9)").ToString();
+                            printer.printLine("How many jokes do you want? (1-9)");
                             int n = Int32.Parse(Console.ReadLine());
                             GetRandomJokes(null, n);
                             PrintResults();
@@ -65,7 +66,7 @@ namespace ConsoleApp1
 
         private static void PrintResults()
         {
-            printer.Value("[" + string.Join(",", results) + "]").ToString();
+            printer.printLine("[" + string.Join(",", results) + "]");
         }
 
         private static void GetEnteredKey(ConsoleKeyInfo consoleKeyInfo)
