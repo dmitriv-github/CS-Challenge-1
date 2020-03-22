@@ -20,8 +20,7 @@ namespace ConsoleApp1
 
         public override string ToString()
         {
-            Console.WriteLine(PrintValue);
-            return null;
+            return $"{this.GetType().Name}: {this.printValue}";
         }
     }
 }
