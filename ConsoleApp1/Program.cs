@@ -17,19 +17,19 @@ namespace ConsoleApp1
 
         static void Main(string[] args)
         {
-            printer.printLine("Press ? to get instructions, or 'exit' to exit.");
-            string input;
+            printer.printLine("Press ? to get instructions, or type 'exit' to exit.");
+            string initialInput;
 
             do {
-                input = Console.ReadLine();
+                initialInput = Console.ReadLine();
 
-                if (input == "exit") Environment.Exit(0);
-            } while (input != "?");
+                if (initialInput == "exit") Environment.Exit(0);
+            } while (initialInput != "?");
 
             printer.printLine("Press c to get categories");
             printer.printLine("Press r to get random jokes");
 
-            GetEnteredKey(Console.ReadKey());
+            GetEnteredKey();
 
             if (key == 'c')
             {
@@ -40,7 +40,7 @@ namespace ConsoleApp1
             if (key == 'r')
             {
                 printer.printLine("Want to use a random name? y/n");
-                GetEnteredKey(Console.ReadKey());
+                GetEnteredKey();
 
                 if (key == 'y') GetNames();
 
@@ -70,9 +70,11 @@ namespace ConsoleApp1
             printer.printLine("[" + string.Join(",", results) + "]");
         }
 
-        private static void GetEnteredKey(ConsoleKeyInfo consoleKeyInfo)
+        private static void GetEnteredKey()
         {
-            switch (consoleKeyInfo.Key)
+            ConsoleKeyInfo enteredKey = Console.ReadKey();
+
+            switch (enteredKey.Key)
             {
                 case ConsoleKey.C:
                     key = 'c';
