@@ -10,9 +10,10 @@ namespace ConsoleApp1
 {
     class Program
     {
-        static string[] results = new string[50];
+        static string[] categories;
+        static string[] results;
         static ConsoleKey key;
-        static Tuple<string, string> name;
+        static (string first, string last) name;
         static ConsolePrinter printer = new ConsolePrinter();
 
         static JokesFeed jokes;
@@ -44,9 +45,7 @@ namespace ConsoleApp1
                 if (key == ConsoleKey.C)
                 {   
                     printer.PrintLine();
-
-                    await GetCategories();
-                    PrintResults();
+                    printer.PrintArray(await GetCategories(), true);
                 }
                 
                 if (key == ConsoleKey.R)
@@ -56,36 +55,23 @@ namespace ConsoleApp1
                     GetEnteredKey();
 
                     if (key == ConsoleKey.Y) {
-                        await GetNames();
+                        await GetRandomName();
                     }
 
+                    printer.PrintLine();
                     printer.PrintLine("Want to specify a category? y/n");
-                    
-                    // if (key == ConsoleKey.Y)
-                    // {
-                    //     printer.printLine("How many jokes do you want? (1-9)");
-                    //     int n = Int32.Parse(Console.ReadLine());
-                    //     printer.printLine("Enter a category;");
-                    //     GetRandomJokes(Console.ReadLine(), n);
-                    //     PrintResults();
-                    // }
-                    // else
-                    // {
-                    //     printer.printLine("How many jokes do you want? (1-9)");
-                    //     int n = Int32.Parse(Console.ReadLine());
-                    //     GetRandomJokes(null, n);
-                    //     PrintResults();
-                    // }
+                    GetEnteredKey();
+
+                    string category = key == ConsoleKey.Y ? await GetCategoryFromInput() : null;
+
+                    printer.PrintLine("How many jokes do you want? (1-9)");
+                    int n = Int32.Parse(Console.ReadLine());
+                    GetRandomJokes(category, n);
+                    printer.PrintArray(results, false);
+                    (name.last, name.first) = (null, null);
                 }
 
-                name = null;
-
             } while (key != ConsoleKey.X);
-        }
-
-        private static void PrintResults()
-        {
-            printer.PrintLine("[" + string.Join(", ", results) + "]");
         }
 
         private static ConsoleKey GetEnteredKey() => key = Console.ReadKey().Key;
@@ -93,20 +79,45 @@ namespace ConsoleApp1
         private static void GetRandomJokes(string category, int number)
         {
             jokes = jokes ?? new JokesFeed();
-            results = jokes.GetRandomJokes(name?.Item1, name?.Item2, category);
+            results = jokes.GetRandomJokes(name.first, name.last, category);
         }
 
-        private static async Task GetCategories()
-        {
-            jokes = jokes ?? new JokesFeed();
-            results = await jokes.GetCategories();
+        private static async Task<string[]> GetCategories()
+        {   
+            if (categories is null) {
+                jokes = jokes ?? new JokesFeed();
+                categories = await jokes.GetCategories();
+            } 
+
+            return categories;
         }
 
-        private static async Task GetNames()
+        private static async Task GetRandomName()
         {
             names = names ?? new NamesFeed();
-            dynamic result = await names.GetName();
-            name = Tuple.Create(result.name.ToString(), result.surname.ToString());
+            (name.first, name.last) = await names.GetName();
+        }
+
+        private static async Task<string> GetCategoryFromInput() {
+            await GetCategories();
+
+            while (true) {
+                printer.PrintLine();
+                printer.PrintLine("Enter a category (or 'cancel' to cancel):");
+
+                string category = Console.ReadLine();
+
+                if (category == "cancel") {
+                    return null;
+                }
+
+                if (categories.Contains(category)) {
+                    return category;
+                } 
+
+                printer.PrintLine("Category must be an item from the following list:");
+                printer.PrintArray(categories, true);
+            }
         }
     }
 }
