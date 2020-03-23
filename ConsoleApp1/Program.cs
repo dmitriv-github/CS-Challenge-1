@@ -33,15 +33,15 @@ namespace ConsoleApp1
             printer.PrintLine("Press ? to get instructions, or type 'exit' to exit.");
             string initialInput;
 
+            // Keep taking user input until you get a "?" or exit command:
             do {
                 initialInput = Console.ReadLine();
 
                 if (initialInput == "exit") Environment.Exit(0);
             } while (initialInput != "?");
 
+            // MAIN EXECUTION LOOP:
             do {
-                (string firstName, string lastName) name = (null, null);
-
                 printer.PrintLine("\nPress c to get categories");
                 printer.PrintLine("Press r to get random jokes");
                 printer.PrintLine("Press x to exit");
@@ -49,7 +49,7 @@ namespace ConsoleApp1
 
                 if (key == ConsoleKey.C)
                 {   
-                    printer.PrintLine();
+                    printer.PrintLine(); // So that the array is not printed right on user cursor.
                     printer.PrintArray(await GetCategories(), true);
                 }
                 
@@ -57,18 +57,13 @@ namespace ConsoleApp1
                 {
                     printer.PrintLine("\nWant to use a random name? y/n");
                     GetEnteredKey();
-
-                    if (key == ConsoleKey.Y) {
-                        name = await GetRandomName();
-                    }
+                    (string firstName, string lastName) name = key == ConsoleKey.Y ? await GetRandomName() : (null, null);
 
                     printer.PrintLine("\nWant to specify a category? y/n");
                     GetEnteredKey();
-
                     string category = key == ConsoleKey.Y ? await GetCategoryFromUser() : null;
 
                     printer.PrintLine("\nHow many jokes do you want? (1-9)");
-                    
                     int numJokes = 0;
 
                     try {
@@ -89,8 +84,11 @@ namespace ConsoleApp1
             } while (key != ConsoleKey.X);
         }
 
+        /// <summary>Gets and saves the key pressed by the user.</summary>
         private static ConsoleKey GetEnteredKey() => key = Console.ReadKey().Key;
 
+        /// <summary> Gets the specified <code>number</code> of jokes with the specified <code>category</code> for the
+        /// given <code>name</code></summary>
         private static async Task GetRandomJokes(string category, int number, (string first, string last) name)
         {
             jokes = jokes ?? new JokesFeed();
@@ -102,6 +100,7 @@ namespace ConsoleApp1
             }
         }
 
+        /// <summary> Gets all the possible joke categories and saves them. </summary>
         private static async Task<string[]> GetCategories()
         {   
             if (categories is null) {
@@ -118,6 +117,7 @@ namespace ConsoleApp1
             return categories;
         }
 
+        /// <summary> Returns a random name as a tuple. </summary>
         private static async Task<(string firstName, string lastName)> GetRandomName()
         {
             names = names ?? new NamesFeed();
@@ -130,6 +130,8 @@ namespace ConsoleApp1
             }
         }
 
+        /// <summary> Gets a category from user input, and checks if the entered category is one of the valid categories.
+        /// Gets the list of valid categories if not already fetched. </summary>
         private static async Task<string> GetCategoryFromUser() {
             await GetCategories();
 

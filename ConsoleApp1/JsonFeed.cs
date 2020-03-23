@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace ConsoleApp1
 {
+    /// <summary> Class for getting JSON data from API calls. </summary>
     class JsonFeed
     {
         protected HttpClient client;
@@ -20,6 +21,7 @@ namespace ConsoleApp1
         }
     }
 
+    /// <summary>Specialty class for connecting to the Chuck Norris jokes API.</summary>
     class JokesFeed : JsonFeed
     {
         private static string _url = "https://api.chucknorris.io/jokes/";
@@ -27,6 +29,7 @@ namespace ConsoleApp1
         public JokesFeed() : base(_url)
         { }
 
+        /// <summary> Performs a GET request to fetch all the possible Chuck Norris joke categories from the API. </summary>
         public async Task<string[]> GetCategories()
         {
             string categoriesJson = await client.GetStringAsync("categories");
@@ -34,6 +37,8 @@ namespace ConsoleApp1
             return categoriesList.ToArray();
         }
 
+        /// <summary> Performs a numJokes GET requests to get random Chuck Norris jokes with the specified category,
+        /// optionally replacing Chuck Norris's name with the provided firstname and lastname </summary>
         public async Task<string[]> GetRandomJokes(int numJokes, string category, string firstname, string lastname)
         {
             string url = "random";
@@ -62,11 +67,13 @@ namespace ConsoleApp1
         }
     }
 
+    ///<summary>Specialty class for getting random names from the UINames API.</summary>
     class NamesFeed : JsonFeed {
         private static string _url = "https://uinames.com/api/";
         public NamesFeed() : base(_url)
         { }
 
+        /// Performs a GET request to get a random name, and returns it as a tuple of firstName and lastName </summary>
         public async Task<(string firstName, string lastName)> GetName()
         {
             string json = await client.GetStringAsync("");
