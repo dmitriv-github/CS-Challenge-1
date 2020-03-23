@@ -7,7 +7,7 @@ namespace ConsoleApp1
     {
         private string printValue;
 
-        /// <summary>Prints a blank line on the console.</summary>
+        /// <summary>Overloaded version of PrintLine to print a blank line on the console.</summary>
         public void PrintLine() => Console.WriteLine();
 
         /// <summary> Prints the specified string value on its own line in the console. </summary>

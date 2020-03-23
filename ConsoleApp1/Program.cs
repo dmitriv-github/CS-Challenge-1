@@ -10,9 +10,7 @@ namespace ConsoleApp1
         static string[] results;
         static ConsoleKey key;
         static ConsolePrinter printer = new ConsolePrinter();
-
         static JokesFeed jokes;
-
         static NamesFeed names;
 
         static void Main(string[] args) {
@@ -88,6 +86,7 @@ namespace ConsoleApp1
         private static async Task GetRandomJokes(string category, int number, (string first, string last) name)
         {
             jokes = jokes ?? new JokesFeed();
+
             try {
                 results = await jokes.GetRandomJokes(number, category, name.first, name.last);
             } catch (Exception e) {
