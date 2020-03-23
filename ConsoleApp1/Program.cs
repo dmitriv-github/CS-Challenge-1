@@ -20,7 +20,12 @@ namespace ConsoleApp1
         static NamesFeed names;
 
         static void Main(string[] args) {
-            AsyncMain(args).Wait();
+            try {
+                AsyncMain(args).Wait();
+            } catch (Exception) {
+                printer.PrintLine("Exception occurred.");
+                Environment.Exit(-1);
+            }
         }
 
         static async Task AsyncMain(string[] args)
@@ -35,9 +40,9 @@ namespace ConsoleApp1
             } while (initialInput != "?");
 
             do {
-                (string firstName, string lastName) name;
+                (string firstName, string lastName) name = (null, null);
 
-                printer.PrintLine("Press c to get categories");
+                printer.PrintLine("\nPress c to get categories");
                 printer.PrintLine("Press r to get random jokes");
                 printer.PrintLine("Press x to exit");
                 GetEnteredKey();
@@ -74,9 +79,9 @@ namespace ConsoleApp1
                             continue;
                         }
 
-                        await GetRandomJokes(category, numJokes);
+                        await GetRandomJokes(category, numJokes, name);
                         printer.PrintArray(results, false);
-                    } catch (FormatException e) {
+                    } catch (FormatException) {
                         printer.PrintLine("Please enter a number between 1 and 9.\n");
                     }
                 }
@@ -86,17 +91,28 @@ namespace ConsoleApp1
 
         private static ConsoleKey GetEnteredKey() => key = Console.ReadKey().Key;
 
-        private static async Task GetRandomJokes(string category, int number)
+        private static async Task GetRandomJokes(string category, int number, (string first, string last) name)
         {
             jokes = jokes ?? new JokesFeed();
-            results = await jokes.GetRandomJokes(number, category, name.first, name.last);
+            try {
+                results = await jokes.GetRandomJokes(number, category, name.first, name.last);
+            } catch (Exception e) {
+                printer.PrintLine("Failed to get jokes.");
+                throw e;
+            }
         }
 
         private static async Task<string[]> GetCategories()
         {   
             if (categories is null) {
                 jokes = jokes ?? new JokesFeed();
-                categories = await jokes.GetCategories();
+
+                try {
+                    categories = await jokes.GetCategories();
+                } catch (Exception e) {
+                    printer.PrintLine("Failed to get categories.");
+                    throw e;
+                }
             } 
 
             return categories;
@@ -105,7 +121,13 @@ namespace ConsoleApp1
         private static async Task<(string firstName, string lastName)> GetRandomName()
         {
             names = names ?? new NamesFeed();
-            return await names.GetName();
+
+            try {
+                return await names.GetName();
+            } catch (Exception e) {
+                printer.PrintLine("Failed to get a random name.");
+                throw e;
+            }
         }
 
         private static async Task<string> GetCategoryFromUser() {
