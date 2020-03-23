@@ -62,18 +62,13 @@ namespace ConsoleApp1
 
     class NamesFeed : JsonFeed {
         private static string _url = "https://uinames.com/api/";
-
-        private class Person {
-            public string name;
-            public string surname;
-        }
         public NamesFeed() : base(_url)
         { }
 
         public async Task<(string firstName, string lastName)> GetName()
         {
             string json = await client.GetStringAsync("");
-            Person result = JsonConvert.DeserializeObject<Person>(json);
+            dynamic result = JsonConvert.DeserializeObject<dynamic>(json);
             return (result.name, result.surname);
         }
     }
