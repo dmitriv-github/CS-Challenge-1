@@ -81,7 +81,7 @@ namespace ConsoleApp1
         private static async Task GetRandomJokes(string category, int number)
         {
             jokes = jokes ?? new JokesFeed();
-            results = new string[] {await jokes.GetRandomJokes(name.first, name.last, category)};
+            results = await jokes.GetRandomJokes(number, category, name.first, name.last);
         }
 
         private static async Task<string[]> GetCategories()

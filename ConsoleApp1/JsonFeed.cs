@@ -34,9 +34,10 @@ namespace ConsoleApp1
             return categoriesList.ToArray();
         }
 
-        public async Task<string> GetRandomJokes(string firstname, string lastname, string category)
+        public async Task<string[]> GetRandomJokes(int numJokes, string category, string firstname, string lastname)
         {
             string url = "random";
+            string[] jokes = new string[numJokes];
 
             if (category != null)
             {
@@ -45,15 +46,19 @@ namespace ConsoleApp1
                 url += '?' + query.ToString();
             }
 
-            string jokesJson = await client.GetStringAsync(url);
-            string joke = JsonConvert.DeserializeObject<dynamic>(jokesJson).value;
+            for (int i = 0; i < numJokes; i++) {
+                string jokesJson = await client.GetStringAsync(url);
+                string joke = JsonConvert.DeserializeObject<dynamic>(jokesJson).value;
 
-            if (firstname != null && lastname != null)
-            {
-                joke = joke.Replace("Chuck", firstname).Replace("Norris", lastname);
+                if (firstname != null && lastname != null)
+                {
+                    joke = joke.Replace("Chuck", firstname).Replace("Norris", lastname);
+                }
+
+                jokes[i] = joke;
             }
 
-            return joke;
+            return jokes;
         }
     }
 
