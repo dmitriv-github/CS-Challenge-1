@@ -35,11 +35,10 @@ namespace ConsoleApp1
                 if (initialInput == "exit") Environment.Exit(0);
             } while (initialInput != "?");
 
-            printer.PrintLine("Press c to get categories");
-            printer.PrintLine("Press r to get random jokes");
-            printer.PrintLine("Press x at any time to exit");
-
             do {
+                printer.PrintLine("Press c to get categories");
+                printer.PrintLine("Press r to get random jokes");
+                printer.PrintLine("Press x to exit");
                 GetEnteredKey();
 
                 if (key == ConsoleKey.C)
@@ -50,27 +49,36 @@ namespace ConsoleApp1
                 
                 if (key == ConsoleKey.R)
                 {
-                    printer.PrintLine();
-                    printer.PrintLine("Want to use a random name? y/n");
+                    printer.PrintLine("\nWant to use a random name? y/n");
                     GetEnteredKey();
 
                     if (key == ConsoleKey.Y) {
                         await GetRandomName();
                     }
 
-                    printer.PrintLine();
-                    printer.PrintLine("Want to specify a category? y/n");
+                    printer.PrintLine("\nWant to specify a category? y/n");
                     GetEnteredKey();
 
-                    string category = key == ConsoleKey.Y ? await GetCategoryFromInput() : null;
+                    string category = key == ConsoleKey.Y ? await GetCategoryFromUSer() : null;
 
-                    printer.PrintLine();
-                    printer.PrintLine("How many jokes do you want? (1-9)");
+                    printer.PrintLine("\nHow many jokes do you want? (1-9)");
                     
-                    int n = Int32.Parse(Console.ReadLine());
-                    await GetRandomJokes(category, n);
-                    printer.PrintArray(results, false);
-                    (name.last, name.first) = (null, null);
+                    int numJokes = 0;
+
+                    try {
+                        numJokes = Int32.Parse(Console.ReadLine());
+
+                        if (numJokes < 1 || numJokes > 9) {
+                            printer.PrintLine("Please enter a number between 1 and 9.\n");
+                            continue;
+                        }
+
+                        await GetRandomJokes(category, numJokes);
+                        printer.PrintArray(results, false);
+                        (name.last, name.first) = (null, null);
+                    } catch (FormatException e) {
+                        printer.PrintLine("Please enter a number between 1 and 9.\n");
+                    }
                 }
 
             } while (key != ConsoleKey.X);
@@ -100,12 +108,11 @@ namespace ConsoleApp1
             (name.first, name.last) = await names.GetName();
         }
 
-        private static async Task<string> GetCategoryFromInput() {
+        private static async Task<string> GetCategoryFromUSer() {
             await GetCategories();
 
             while (true) {
-                printer.PrintLine();
-                printer.PrintLine("Enter a category (or 'cancel' to cancel):");
+                printer.PrintLine("\nEnter a category (or 'cancel' to cancel):");
 
                 string category = Console.ReadLine();
 
