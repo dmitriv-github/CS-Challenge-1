@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -33,30 +34,26 @@ namespace ConsoleApp1
             return categoriesList.ToArray();
         }
 
-        public string[] GetRandomJokes(string firstname, string lastname, string category)
+        public async Task<string> GetRandomJokes(string firstname, string lastname, string category)
         {
-            string url = "jokes/random";
+            string url = "random";
 
             if (category != null)
             {
-                if (url.Contains('?')) url += "&";
-                else url += "?";
-                
-                url += "category=";
-                url += category;
+                var query = HttpUtility.ParseQueryString(String.Empty);
+                query["category"] = category;
+                url += '?' + query.ToString();
             }
 
-            string joke = Task.FromResult(client.GetStringAsync(url).Result).Result;
+            string jokesJson = await client.GetStringAsync(url);
+            string joke = JsonConvert.DeserializeObject<dynamic>(jokesJson).value;
 
             if (firstname != null && lastname != null)
             {
-                int index = joke.IndexOf("Chuck Norris");
-                string firstPart = joke.Substring(0, index);
-                string secondPart = joke.Substring(0 + index + "Chuck Norris".Length, joke.Length - (index + "Chuck Norris".Length));
-                joke = firstPart + " " + firstname + " " + lastname + secondPart;
+                joke = joke.Replace("Chuck", firstname).Replace("Norris", lastname);
             }
 
-            return new string[] { JsonConvert.DeserializeObject<dynamic>(joke).value };
+            return joke;
         }
     }
 

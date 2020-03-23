@@ -64,9 +64,11 @@ namespace ConsoleApp1
 
                     string category = key == ConsoleKey.Y ? await GetCategoryFromInput() : null;
 
+                    printer.PrintLine();
                     printer.PrintLine("How many jokes do you want? (1-9)");
+                    
                     int n = Int32.Parse(Console.ReadLine());
-                    GetRandomJokes(category, n);
+                    await GetRandomJokes(category, n);
                     printer.PrintArray(results, false);
                     (name.last, name.first) = (null, null);
                 }
@@ -76,10 +78,10 @@ namespace ConsoleApp1
 
         private static ConsoleKey GetEnteredKey() => key = Console.ReadKey().Key;
 
-        private static void GetRandomJokes(string category, int number)
+        private static async Task GetRandomJokes(string category, int number)
         {
             jokes = jokes ?? new JokesFeed();
-            results = jokes.GetRandomJokes(name.first, name.last, category);
+            results = new string[] {await jokes.GetRandomJokes(name.first, name.last, category)};
         }
 
         private static async Task<string[]> GetCategories()
