@@ -13,7 +13,6 @@ namespace ConsoleApp1
         static string[] categories;
         static string[] results;
         static ConsoleKey key;
-        static (string first, string last) name;
         static ConsolePrinter printer = new ConsolePrinter();
 
         static JokesFeed jokes;
@@ -36,6 +35,8 @@ namespace ConsoleApp1
             } while (initialInput != "?");
 
             do {
+                (string firstName, string lastName) name;
+
                 printer.PrintLine("Press c to get categories");
                 printer.PrintLine("Press r to get random jokes");
                 printer.PrintLine("Press x to exit");
@@ -53,13 +54,13 @@ namespace ConsoleApp1
                     GetEnteredKey();
 
                     if (key == ConsoleKey.Y) {
-                        await GetRandomName();
+                        name = await GetRandomName();
                     }
 
                     printer.PrintLine("\nWant to specify a category? y/n");
                     GetEnteredKey();
 
-                    string category = key == ConsoleKey.Y ? await GetCategoryFromUSer() : null;
+                    string category = key == ConsoleKey.Y ? await GetCategoryFromUser() : null;
 
                     printer.PrintLine("\nHow many jokes do you want? (1-9)");
                     
@@ -75,7 +76,6 @@ namespace ConsoleApp1
 
                         await GetRandomJokes(category, numJokes);
                         printer.PrintArray(results, false);
-                        (name.last, name.first) = (null, null);
                     } catch (FormatException e) {
                         printer.PrintLine("Please enter a number between 1 and 9.\n");
                     }
@@ -102,13 +102,13 @@ namespace ConsoleApp1
             return categories;
         }
 
-        private static async Task GetRandomName()
+        private static async Task<(string firstName, string lastName)> GetRandomName()
         {
             names = names ?? new NamesFeed();
-            (name.first, name.last) = await names.GetName();
+            return await names.GetName();
         }
 
-        private static async Task<string> GetCategoryFromUSer() {
+        private static async Task<string> GetCategoryFromUser() {
             await GetCategories();
 
             while (true) {
